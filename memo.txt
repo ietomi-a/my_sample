@@ -1,0 +1,41 @@
+ReduxでのMiddleware不要論
+
+https://qiita.com/uryyyyyyy/items/d8bae6a7fca1c4732696
+
+
+
+
+1. state の違いについて
+  reducer が受け取る state, action について,
+    state は過去に reducer が返したオブジェクト.
+    action は dispatch の引数に与えられたオブジェクト.
+
+  connect に渡す関数
+    mapStateToProps の引数の state
+      reducer が返したオブジェクト.  
+
+2. reducer の初期化時の呼ばれ方
+  reducer が 初期化の際に 3 回呼ばれることについて.
+    combineReducers の呼び出しの中で, assertReducerShape　を呼んでおり、この中で 2 回呼んでる。
+    createStore の呼び出しで 1 回呼ばれる。
+
+3. dispatch からの呼ばれ方の順
+  dispatch -> reducer -> 「connect に渡す mapStateProps」の順に動く.
+
+4. 「connect に渡す mapStateProps」の呼ばれるタイミング.
+　　props が更新される前のところでよばれる。
+
+
+
+async/await記法
+
+
+
+acorn
+  webpack でビルドする際に必要になる。
+
+
+package.json
+  browserslist の項目について.
+  https://parashuto.com/rriver/tools/using-custom-data-for-autoprefixer
+  webpack などのビルドツールが参照することがあるらしい.
