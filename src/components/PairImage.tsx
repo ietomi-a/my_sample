@@ -7,10 +7,9 @@ const Image = (props) => {
     <div>
       <img src={props.image_src} />
       <button onClick={ () => {
-        console.log("select,", props.image_src );
-        // console.log(props);
-        //console.log(props.dispatch);
-        props.dispatch( { type: "SELECT_IMAGE", image_path:props.image_src} ) ;
+        // console.log("select,", props.image_src );
+        props.dispatch( { type: "SELECT_IMAGE", image_path:props.image_src,
+                          images: props.images } );
       }}> select </button>
     </div>
   );
@@ -25,8 +24,13 @@ const _ImagePair = (props) => {
   return (<div>
             好きな方を選べ.
             <ul>
-              <Image image_src={props.left_image_path} dispatch={props.dispatch}/>
-              <Image image_src={props.right_image_path} dispatch={props.dispatch}/>
+              <Image image_src={props.left_image_path}
+                     images={[props.left_image_path,props.right_image_path]}
+                     dispatch={props.dispatch}
+              />
+              <Image image_src={props.right_image_path}
+                     images={[props.left_image_path,props.right_image_path]}
+                     dispatch={props.dispatch}/>
             </ul>        
           </div>);
 };
