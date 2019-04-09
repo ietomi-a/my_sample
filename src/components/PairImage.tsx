@@ -17,10 +17,10 @@ const Image = (props) => {
 
 
 const _ImagePair = (props) => {
-  console.log("image_pair, props =", props );
+  //console.log("image_pair, props =", props );
   //console.log("image_pair", image_pair);
-  console.log( "left_image_path, right_image_path",
-               props.left_image_path, props.right_image_path );
+  // console.log( "left_image_path, right_image_path",
+  //              props.left_image_path, props.right_image_path );
   return (<div>
             choose better.
             <ul>
@@ -41,7 +41,7 @@ function _mapDispatchToProps(dispatch) {
 }
 
 function _mapStateToProps ( state) {
-  console.log("hello, mapState, state =", state );
+  //console.log("hello, mapState, state =", state );
   return state.image_pair;
 }
 

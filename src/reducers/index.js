@@ -24,11 +24,11 @@ function _get_image_paths(){
 // other_r は対戦相手のレーティング.
 // win : 勝ったら 1, 負けたら 0.
 function elo_rating( own_r, other_r, win ){
-  const K = 32
-  const E_own = 1/( 1 + 10**(( other_r - own_r)/400) )
+  const K = 32;
+  const E_own = 1/( 1 + 10**(( other_r - own_r)/400) );
   //console.log(E_own)
-  const new_rate = own_r + K * ( win - E_own )
-  return new_rate
+  const new_rate = own_r + K * ( win - E_own );
+  return new_rate;
 }
 
 
@@ -88,28 +88,32 @@ function get_init_rates(){
 }
 
 function get_new_state( state, new_rates ){
-  for( let image_path in new_rates ){
-    state[image_path] = new_rates[image_path];
+  let new_state = { rates: {} }
+  for( let image_path in state.rates ){
+    new_state.rates[image_path] = state.rates[image_path];
   }
-  return state;  
+  for( let image_path in new_rates ){
+    new_state.rates[image_path] = new_rates[image_path];
+  }
+  return new_state;  
 }
 
 
-const ranking = (state = get_init_rates(), action) => {
+const ranking = (state = {rates: get_init_rates()}, action) => {
   // console.log("in ranking reducer, action=", action);
   switch( action.type ){
   case "SELECT_IMAGE":
     let selected_image_path = action.image_path;
     let images = action.images;
-    let cur_rates = get_current_rates(state, images);
+    let cur_rates = get_current_rates(state.rates, images);
     let new_rates = get_new_rate_pair( cur_rates, selected_image_path );
-    // console.log("in ranking reducer, state=", state);
+    //console.log("in ranking reducer, state=", state);
     // console.log("in ranking reducer, image_path=", selected_image_path);
     // console.log("in ranking reducer, images=", images); 
     let new_state = get_new_state( state, new_rates );
     return new_state;
   default:
-    return state;    
+    return state;
   }
 }
 
@@ -122,5 +126,4 @@ const image_pair = () => {
 
 
 const reducers = combineReducers( { image_pair, ranking } );
-//const reducers = combineReducers( image_pair  );
 export default reducers
