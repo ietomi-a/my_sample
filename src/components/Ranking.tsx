@@ -8,9 +8,26 @@ const RankImage = ( {image_path, rate} ) => (
   </div>
 );
 
+function get_rate_sorted_images(rates){
+  var aSIN = new Array();
+  for( let fpath in rates ){
+    aSIN.push({key:fpath,val:rates[fpath]});
+  }
+  aSIN.sort(
+    (a,b) => { return (a.val > b.val) ? -1 : 1 ; } ) ;
+  //console.log(aSIN);
+  var bTest = new Array();
+  for( let i=0; i < aSIN.length; i++ ){
+    bTest.push(aSIN[i].key);
+  }
+  return bTest;
+}
+
+
 const _Ranking = (props) => {
   //console.log( "in _Ranking props.rates=", props.ratas );
-  let image_paths = Object.keys(props.rates);
+  let image_paths = get_rate_sorted_images(props.rates);
+  //let image_paths = Object.keys(props.rates);
   //let tmp = image_paths.map( (image_path) => ( props.rates[image_path] ) );
   // console.log( "in _Ranking image_paths=", image_paths );
   return (<ul>
