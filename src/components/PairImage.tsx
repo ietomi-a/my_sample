@@ -23,15 +23,29 @@ const _ImagePair = (props) => {
   //              props.left_image_path, props.right_image_path );
   return (<div>
             choose better.
-            <ul>
-              <Image image_src={props.left_image_path}
-                     images={[props.left_image_path,props.right_image_path]}
-                     dispatch={props.dispatch}
-              />
-              <Image image_src={props.right_image_path}
-                     images={[props.left_image_path,props.right_image_path]}
-                     dispatch={props.dispatch}/>
-            </ul>        
+            <table >
+              <tr>
+                <td>
+                  <Image image_src={props.left_image_path}
+                         images={[props.left_image_path,props.right_image_path]}
+                         dispatch={props.dispatch} />
+                </td>
+                <td>
+                  <Image image_src={props.right_image_path}
+                         images={[props.left_image_path,props.right_image_path]}
+                         dispatch={props.dispatch}/>
+                </td>
+              </tr>
+            </table>            
+            {/* <ul> */}
+            {/*   <Image image_src={props.left_image_path} */}
+            {/*          images={[props.left_image_path,props.right_image_path]} */}
+            {/*          dispatch={props.dispatch} */}
+            {/*   /> */}
+            {/*   <Image image_src={props.right_image_path} */}
+            {/*          images={[props.left_image_path,props.right_image_path]} */}
+            {/*          dispatch={props.dispatch}/> */}
+            {/* </ul>         */}
           </div>);
 };
 

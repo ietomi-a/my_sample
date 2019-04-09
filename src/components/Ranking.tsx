@@ -31,6 +31,7 @@ const _Ranking = (props) => {
   //let tmp = image_paths.map( (image_path) => ( props.rates[image_path] ) );
   // console.log( "in _Ranking image_paths=", image_paths );
   return (<ul>
+            ranking
           {image_paths.map( image_path =>
                             <RankImage image_path={image_path}
                                        rate={props.rates[image_path]} />
