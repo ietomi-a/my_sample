@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 const Image = (props) => {
   return (
     <div>
-      <img src={props.image_src} />
+      <img src={props.image_src} width="200" height="200" />
       <button onClick={ () => {
         // console.log("select,", props.image_src );
         props.dispatch( { type: "SELECT_IMAGE", image_path:props.image_src,
@@ -22,7 +22,7 @@ const _ImagePair = (props) => {
   console.log( "left_image_path, right_image_path",
                props.left_image_path, props.right_image_path );
   return (<div>
-            好きな方を選べ.
+            choose better.
             <ul>
               <Image image_src={props.left_image_path}
                      images={[props.left_image_path,props.right_image_path]}

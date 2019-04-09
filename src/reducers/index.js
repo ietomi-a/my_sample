@@ -62,6 +62,7 @@ function get_new_rate_pair( old_rates, winner ){
   return new_rates;
 }
 
+const INIT_RATE = 1500;
 
 function get_current_rates(state, images){
   var rates = {};
@@ -70,29 +71,43 @@ function get_current_rates(state, images){
     if( image_path in state){
       rate = state[image_path];
     }else{
-      rate = 1500;
+      rate = INIT_RATE;
     }
     rates[image_path] = rate;
   }
   return rates;
 }
 
+function get_init_rates(){
+  var init_rates = {};
+  for (let i = 0; i < 10; i++) {
+    let fpath = `images/${i}.jpg`;
+    init_rates[fpath] = INIT_RATE;
+  }
+  return init_rates;
+}
+
+function get_new_state( state, new_rates ){
+  for( let image_path in new_rates ){
+    state[image_path] = new_rates[image_path];
+  }
+  return state;  
+}
 
 
-const ranking = (state = {}, action) => {
+const ranking = (state = get_init_rates(), action) => {
   // console.log("in ranking reducer, action=", action);
   switch( action.type ){
   case "SELECT_IMAGE":
-    const image_path = action.image_path;
-    const images = action.images;
-    console.log("in ranking reducer, image_path=", image_path);
-    console.log("in ranking reducer, images=", images); 
-    if( `${image_path}` in state ) {
-      state[image_path] = state[image_path] + 1;
-    } else {
-      state[image_path] = 1;
-    }
-    return state;
+    let selected_image_path = action.image_path;
+    let images = action.images;
+    let cur_rates = get_current_rates(state, images);
+    let new_rates = get_new_rate_pair( cur_rates, selected_image_path );
+    // console.log("in ranking reducer, state=", state);
+    // console.log("in ranking reducer, image_path=", selected_image_path);
+    // console.log("in ranking reducer, images=", images); 
+    let new_state = get_new_state( state, new_rates );
+    return new_state;
   default:
     return state;    
   }
