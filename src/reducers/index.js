@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 
 
+
+
 function _getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -75,10 +77,24 @@ function get_current_rates(cur_rates, images){
 }
 
 
-function get_init_rates2(){
+// function get_init_rates2(){
+//   var init_rates = {};
+//   for (let i = 0; i < 10; i++) {
+//     let fpath = `images/${i}.jpg`;
+//     let entry = {
+//       rate: INIT_RATE,
+//       win: 0,
+//       lose: 0
+//     }
+//     init_rates[fpath] = entry;
+//   }
+//   return init_rates;
+// }
+
+
+function get_init_rates3( image_list ){
   var init_rates = {};
-  for (let i = 0; i < 10; i++) {
-    let fpath = `images/${i}.jpg`;
+  for( let fpath of image_list ){
     let entry = {
       rate: INIT_RATE,
       win: 0,
@@ -88,6 +104,7 @@ function get_init_rates2(){
   }
   return init_rates;
 }
+
 
 function get_new_state2( state, new_rates, winner_path, loser_path ){
   //console.log("in get_new_state2, new_rates=", new_rates );
@@ -102,7 +119,9 @@ function get_new_state2( state, new_rates, winner_path, loser_path ){
     }
   }
   for( let image_path in new_rates ){
-    new_state.rates[image_path].rate = new_rates[image_path];
+    if( image_path in new_state.rates ){
+      new_state.rates[image_path].rate = new_rates[image_path];
+    }
   }
   return new_state;  
 }
@@ -116,8 +135,10 @@ function get_non_selected_image_path( images, selected_image_path ){
   }
 }
 
-const ranking = (state = {rates: get_init_rates2(), click_num: 0 }, action) => {
-  // console.log("in ranking reducer, action=", action);
+
+//const ranking = (state = {rates: get_init_rates2() }, action) => {
+const ranking = (state = {rates: [] }, action) => {  
+  let new_state;
   switch( action.type ){
   case "SELECT_IMAGE":
     let selected_image_path = action.image_path;
@@ -128,22 +149,33 @@ const ranking = (state = {rates: get_init_rates2(), click_num: 0 }, action) => {
     //console.log("in ranking reducer, state=", state);
     // console.log("in ranking reducer, image_path=", selected_image_path);
     // console.log("in ranking reducer, images=", images); 
-    let new_state = get_new_state2( state, new_rates,
-				    selected_image_path, non_selected_image_path );
+    new_state = get_new_state2( state, new_rates,
+				selected_image_path, non_selected_image_path );
     //console.log("in ranking reducer, tmp_new_state=", new_state );
     //let new_state = { rates: get_init_rates2() };
     return new_state;
+  case "GET_IMAGE_PATHS":
+    // console.log(action.fpath_list);
+    new_state = { rates: get_init_rates3( action.fpath_list) };
+    //rates: get_init_rates2(action.fpath_list))
+    return new_state;    
   default:
     return state;
   }
 }
 
 const image_pair = (state={click_num: 0}, action) => {
-  // console.log("in image_pair reducer, state=", state);
+  let click_num;
   let left_image_path, right_image_path;
   [left_image_path, right_image_path] = _get_image_paths();
-  let click_num = state.click_num + 1
-  return {left_image_path, right_image_path, click_num};
+  switch( action.type ){
+  case "SELECT_IMAGE":    
+    click_num = state.click_num + 1
+    return {left_image_path, right_image_path, click_num};    
+  default:
+    click_num = 0
+    return {left_image_path, right_image_path, click_num};
+  }
 }
 
 const reducers = combineReducers( { image_pair, ranking } );
