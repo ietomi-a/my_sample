@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-//import image_pair from './my_reducer'
 
 
 function _getRandomIntInclusive(min, max) {
@@ -32,44 +31,41 @@ function elo_rating( own_r, other_r, win ){
 }
 
 
-function get_other_rate( rates, own_name ){
+function _get_other_rate( rates, own_name ){
   //console.log( "rates, own_name =", rates, own_name );
   for (let key in rates) {
-    //console.log("in get_other_rate, key,rate=", key, rates[key] );
     if( key !== own_name ){
-      let ret = rates[key];
-      //console.log("this pass,ret=", ret);
-      return ret;
+      return rates[key];
     }
   }
 }
   
 function get_new_rate_pair( old_rates, winner ){
   var new_rates = {}
-  for (let key in old_rates){
-    let other_rate = get_other_rate( old_rates, key );
+  for (let image_path in old_rates){
+    let other_rate = _get_other_rate( old_rates, image_path );
     //console.log("after other, key = ", key );
-    let own_rate = old_rates[key];
+    let own_rate = old_rates[image_path];
     let new_rate;
     //console.log( "in get_new_rate_pair, own_rate, other_rate = ", own_rate, other_rate);
-    if( key == winner ){
+    if( image_path == winner ){
       new_rate = elo_rating( own_rate, other_rate, 1 );
     }else {
       new_rate = elo_rating( own_rate, other_rate, 0 );
     }
-    new_rates[key] = new_rate;
+    new_rates[image_path] = new_rate;
   }
   return new_rates;
 }
 
 const INIT_RATE = 1500;
 
-function get_current_rates(state, images){
+function get_current_rates(cur_rates, images){
   var rates = {};
   for (let image_path of images){
     let rate;
-    if( image_path in state){
-      rate = state[image_path];
+    if( image_path in cur_rates ){
+      rate = cur_rates[image_path].rate;
     }else{
       rate = INIT_RATE;
     }
@@ -78,54 +74,64 @@ function get_current_rates(state, images){
   return rates;
 }
 
-function get_init_rates(){
+
+function get_init_rates2(){
   var init_rates = {};
   for (let i = 0; i < 10; i++) {
     let fpath = `images/${i}.jpg`;
-    init_rates[fpath] = INIT_RATE;
+    let entry = {
+      rate: INIT_RATE,
+      win: 0,
+      lose: 0
+    }
+    init_rates[fpath] = entry;
   }
   return init_rates;
 }
 
-
-// function get_init_rates2(){
-//   var init_rates = {};
-//   for (let i = 0; i < 10; i++) {
-//     let fpath = `images/${i}.jpg`;
-//     let entry = {
-//       rate: INIT_RATE;
-//       win: 0,
-//       lose: 0
-//     }
-//     init_rates[fpath] = entry;
-//   }
-//   return init_rates;
-// }
-
-function get_new_state( state, new_rates ){
+function get_new_state2( state, new_rates, winner_path, loser_path ){
+  //console.log("in get_new_state2, new_rates=", new_rates );
   let new_state = { rates: {} }
   for( let image_path in state.rates ){
     new_state.rates[image_path] = state.rates[image_path];
+    if( image_path == winner_path ){
+      new_state.rates[image_path].win += 1;
+    }
+    if( image_path == loser_path ){
+      new_state.rates[image_path].lose += 1;
+    }
   }
   for( let image_path in new_rates ){
-    new_state.rates[image_path] = new_rates[image_path];
+    new_state.rates[image_path].rate = new_rates[image_path];
   }
   return new_state;  
 }
 
 
-const ranking = (state = {rates: get_init_rates(), click_num: 0 }, action) => {
+function get_non_selected_image_path( images, selected_image_path ){
+  for( let image_path of images ){
+    if( image_path != selected_image_path ){
+      return image_path;
+    }
+  }
+}
+
+const ranking = (state = {rates: get_init_rates2(), click_num: 0 }, action) => {
   // console.log("in ranking reducer, action=", action);
   switch( action.type ){
   case "SELECT_IMAGE":
     let selected_image_path = action.image_path;
     let images = action.images;
-    let cur_rates = get_current_rates(state.rates, images);
+    let cur_rates = get_current_rates( state.rates, images);
     let new_rates = get_new_rate_pair( cur_rates, selected_image_path );
+    let non_selected_image_path = get_non_selected_image_path( images, selected_image_path );
     //console.log("in ranking reducer, state=", state);
     // console.log("in ranking reducer, image_path=", selected_image_path);
     // console.log("in ranking reducer, images=", images); 
-    let new_state = get_new_state( state, new_rates );
+    let new_state = get_new_state2( state, new_rates,
+				    selected_image_path, non_selected_image_path );
+    //console.log("in ranking reducer, tmp_new_state=", new_state );
+    //let new_state = { rates: get_init_rates2() };
     return new_state;
   default:
     return state;
