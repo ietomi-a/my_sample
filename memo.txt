@@ -39,3 +39,9 @@ package.json
   browserslist の項目について.
   https://parashuto.com/rriver/tools/using-custom-data-for-autoprefixer
   webpack などのビルドツールが参照することがあるらしい.
+
+
+
+book
+safari
+「Safari Books Online」
