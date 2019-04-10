@@ -87,6 +87,21 @@ function get_init_rates(){
   return init_rates;
 }
 
+
+// function get_init_rates2(){
+//   var init_rates = {};
+//   for (let i = 0; i < 10; i++) {
+//     let fpath = `images/${i}.jpg`;
+//     let entry = {
+//       rate: INIT_RATE;
+//       win: 0,
+//       lose: 0
+//     }
+//     init_rates[fpath] = entry;
+//   }
+//   return init_rates;
+// }
+
 function get_new_state( state, new_rates ){
   let new_state = { rates: {} }
   for( let image_path in state.rates ){
@@ -99,7 +114,7 @@ function get_new_state( state, new_rates ){
 }
 
 
-const ranking = (state = {rates: get_init_rates()}, action) => {
+const ranking = (state = {rates: get_init_rates(), click_num: 0 }, action) => {
   // console.log("in ranking reducer, action=", action);
   switch( action.type ){
   case "SELECT_IMAGE":
@@ -117,13 +132,13 @@ const ranking = (state = {rates: get_init_rates()}, action) => {
   }
 }
 
-const image_pair = () => {
-  //  console.log("in image_pair reducer, action=", action);
+const image_pair = (state={click_num: 0}, action) => {
+  // console.log("in image_pair reducer, state=", state);
   let left_image_path, right_image_path;
   [left_image_path, right_image_path] = _get_image_paths();
-  return {left_image_path, right_image_path};
+  let click_num = state.click_num + 1
+  return {left_image_path, right_image_path, click_num};
 }
-
 
 const reducers = combineReducers( { image_pair, ranking } );
 export default reducers

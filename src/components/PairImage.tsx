@@ -22,7 +22,8 @@ const _ImagePair = (props) => {
   // console.log( "left_image_path, right_image_path",
   //              props.left_image_path, props.right_image_path );
   return (<div>
-            choose better.
+            choose better. <p/>
+            clinck_num = {props.click_num}.
             <table >
               <tr>
                 <td>
